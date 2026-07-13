@@ -1,0 +1,28 @@
+scalar Date
+scalar DateTime
+scalar Time
+
+enum SortType {
+  ASC
+  DESC
+}
+
+type StatusPayload {
+  code: String
+  message: String
+  error: String
+}
+
+type GeneralResponse {
+  status: StatusPayload
+}
+
+type Query {
+  version: String
+}
+
+input PaginationSearchInput {
+  limit: Int
+  offset: Int
+  search: String
+}
