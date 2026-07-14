@@ -5,6 +5,7 @@ import dir from './dir'
 import { CustomError, formatError } from './error'
 import { JWTUtils } from './jwt'
 import { requestLogger, writeLog } from './logger'
+import { stripNulls } from './object'
 import { buildResponse } from './response'
 
 export {
@@ -18,6 +19,7 @@ export {
   writeLog,
   buildResponse,
   JWTUtils,
+  stripNulls,
 }
 
 export type {

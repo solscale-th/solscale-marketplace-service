@@ -1,0 +1,72 @@
+type Influencer {
+  id: Int
+  email: String
+  firstName: String
+  lastName: String
+  stageName: String
+  age: Int
+  avatarUrl: String
+  platforms: [String!]
+  contentCategories: [String!]
+  languages: [String!]
+  bankName: String
+  bankAccountName: String
+  bankAccountNumber: String
+  otherPhotos: [String!]
+  averageRating: Float
+  reviewCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InfluencerPayload {
+  data: Influencer
+  status: StatusPayload
+}
+
+type InfluencersPayload {
+  data: [Influencer]
+  status: StatusPayload
+}
+
+type LoginInfluencerData {
+  token: String
+  influencer: Influencer
+}
+
+type LoginInfluencerPayload {
+  data: LoginInfluencerData
+  status: StatusPayload
+}
+
+input LoginInfluencerInput {
+  email: String!
+  password: String!
+}
+
+input CreateInfluencerInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  stageName: String
+  age: Int
+  avatarUrl: String
+  platforms: [String!]
+  contentCategories: [String!]
+  languages: [String!]
+  bankName: String
+  bankAccountName: String
+  bankAccountNumber: String
+  otherPhotos: [String!]
+}
+
+type Query {
+  influencers: InfluencersPayload
+  influencer(id: Int!): InfluencerPayload
+}
+
+type Mutation {
+  createInfluencer(input: CreateInfluencerInput!): InfluencerPayload
+  loginInfluencer(input: LoginInfluencerInput!): LoginInfluencerPayload
+}
