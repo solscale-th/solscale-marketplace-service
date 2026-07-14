@@ -1,0 +1,58 @@
+type Entrepreneur {
+  id: Int
+  email: String
+  companyName: String
+  brandDescription: String
+  logoUrl: String
+  bankName: String
+  bankAccountName: String
+  bankAccountNumber: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type EntrepreneurPayload {
+  data: Entrepreneur
+  status: StatusPayload
+}
+
+type EntrepreneursPayload {
+  data: [Entrepreneur]
+  status: StatusPayload
+}
+
+type LoginEntrepreneurData {
+  token: String
+  entrepreneur: Entrepreneur
+}
+
+type LoginEntrepreneurPayload {
+  data: LoginEntrepreneurData
+  status: StatusPayload
+}
+
+input LoginEntrepreneurInput {
+  email: String!
+  password: String!
+}
+
+input CreateEntrepreneurInput {
+  email: String!
+  password: String!
+  companyName: String!
+  brandDescription: String
+  logoUrl: String
+  bankName: String
+  bankAccountName: String
+  bankAccountNumber: String
+}
+
+type Query {
+  entrepreneurs: EntrepreneursPayload
+  entrepreneur(id: Int!): EntrepreneurPayload
+}
+
+type Mutation {
+  createEntrepreneur(input: CreateEntrepreneurInput!): EntrepreneurPayload
+  loginEntrepreneur(input: LoginEntrepreneurInput!): LoginEntrepreneurPayload
+}

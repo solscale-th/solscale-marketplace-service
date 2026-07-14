@@ -1,5 +1,7 @@
-import ItemRepository from './item'
+import EntrepreneurRepository from './entrepreneur'
+import InfluencerRepository from './influencer'
 
 export {
-  ItemRepository,
+  EntrepreneurRepository,
+  InfluencerRepository,
 }
