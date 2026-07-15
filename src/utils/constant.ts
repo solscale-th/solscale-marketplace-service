@@ -16,6 +16,7 @@ export const ResponseMessage = {
     InvalidCredential: 'Invalid username or password',
     DuplicatedRecord: 'Duplicated record',
     RequiredFields: 'Please fill in required fields',
+    Unauthorized: 'You must be logged in to perform this action',
   },
 }
 

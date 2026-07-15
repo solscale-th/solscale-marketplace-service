@@ -4,7 +4,8 @@ import { DataTypes, Model, Optional } from 'sequelize'
 export interface EntrepreneurAttributes {
   id: number;
   email: string;
-  password: string;
+  password: string | null;
+  googleId?: string | null;
   companyName: string;
   brandDescription?: string;
   logoUrl?: string;
@@ -17,13 +18,14 @@ export interface EntrepreneurAttributes {
 
 export type EntrepreneurPk = 'id'
 export type EntrepreneurId = Entrepreneur[EntrepreneurPk]
-export type EntrepreneurOptionalAttributes = 'id' | 'brandDescription' | 'logoUrl' | 'bankName' | 'bankAccountName' | 'bankAccountNumber' | 'createdAt' | 'updatedAt'
+export type EntrepreneurOptionalAttributes = 'id' | 'password' | 'googleId' | 'brandDescription' | 'logoUrl' | 'bankName' | 'bankAccountName' | 'bankAccountNumber' | 'createdAt' | 'updatedAt'
 export type EntrepreneurCreationAttributes = Optional<EntrepreneurAttributes, EntrepreneurOptionalAttributes>
 
 export class Entrepreneur extends Model<EntrepreneurAttributes, EntrepreneurCreationAttributes> implements EntrepreneurAttributes {
   id!: number
   email!: string
-  password!: string
+  password!: string | null
+  googleId?: string | null
   companyName!: string
   brandDescription?: string
   logoUrl?: string
@@ -48,7 +50,12 @@ export class Entrepreneur extends Model<EntrepreneurAttributes, EntrepreneurCrea
       },
       password: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
+      },
+      googleId: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        unique: true,
       },
       companyName: {
         type: DataTypes.TEXT,
@@ -89,6 +96,11 @@ export class Entrepreneur extends Model<EntrepreneurAttributes, EntrepreneurCrea
           name: 'entrepreneur_email_key',
           unique: true,
           fields: [{ name: 'email' }],
+        },
+        {
+          name: 'entrepreneur_google_id_key',
+          unique: true,
+          fields: [{ name: 'googleId' }],
         },
       ],
     })

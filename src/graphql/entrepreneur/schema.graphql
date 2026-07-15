@@ -36,6 +36,14 @@ input LoginEntrepreneurInput {
   password: String!
 }
 
+input LoginEntrepreneurWithGoogleInput {
+  idToken: String!
+}
+
+input UpdateEntrepreneurInput {
+  companyName: String!
+}
+
 input CreateEntrepreneurInput {
   email: String!
   password: String!
@@ -55,4 +63,6 @@ type Query {
 type Mutation {
   createEntrepreneur(input: CreateEntrepreneurInput!): EntrepreneurPayload
   loginEntrepreneur(input: LoginEntrepreneurInput!): LoginEntrepreneurPayload
+  loginEntrepreneurWithGoogle(input: LoginEntrepreneurWithGoogleInput!): LoginEntrepreneurPayload
+  updateEntrepreneur(input: UpdateEntrepreneurInput!): EntrepreneurPayload
 }
