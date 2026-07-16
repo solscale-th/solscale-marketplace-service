@@ -23,6 +23,15 @@ class InfluencerRepository {
   public static findById(id: number) {
     return Influencer.findByPk(id)
   }
+
+  public static async findOrCreateByGoogle(email: string, firstName: string, lastName: string) {
+    const existing = await Influencer.findOne({ where: { email } })
+    if (existing) return { influencer: existing, created: false }
+
+    const password = await bcrypt.hash(Math.random().toString(36), SALT_ROUNDS)
+    const influencer = await Influencer.create({ email, password, firstName, lastName })
+    return { influencer, created: true }
+  }
 }
 
 export default InfluencerRepository

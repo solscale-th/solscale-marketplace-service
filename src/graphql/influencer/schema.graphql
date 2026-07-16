@@ -44,6 +44,10 @@ input LoginInfluencerInput {
   password: String!
 }
 
+input LoginInfluencerWithGoogleInput {
+  accessToken: String!
+}
+
 input CreateInfluencerInput {
   email: String!
   password: String!
@@ -69,4 +73,5 @@ type Query {
 type Mutation {
   createInfluencer(input: CreateInfluencerInput!): InfluencerPayload
   loginInfluencer(input: LoginInfluencerInput!): LoginInfluencerPayload
+  loginInfluencerWithGoogle(input: LoginInfluencerWithGoogleInput!): LoginInfluencerPayload
 }

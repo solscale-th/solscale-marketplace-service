@@ -23,6 +23,21 @@ class EntrepreneurRepository {
   public static findById(id: number) {
     return Entrepreneur.findByPk(id)
   }
+
+  public static async findOrCreateByGoogle(email: string) {
+    const existing = await Entrepreneur.findOne({ where: { email } })
+    if (existing) return { entrepreneur: existing, created: false }
+
+    const password = await bcrypt.hash(Math.random().toString(36), SALT_ROUNDS)
+    const entrepreneur = await Entrepreneur.create({ email, password, companyName: '' })
+    return { entrepreneur, created: true }
+  }
+
+  public static async updateById(id: number, payload: Partial<{ companyName: string }>) {
+    const entrepreneur = await Entrepreneur.findByPk(id)
+    if (!entrepreneur) return null
+    return entrepreneur.update(payload)
+  }
 }
 
 export default EntrepreneurRepository

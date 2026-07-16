@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { OAuth2Client } from 'google-auth-library'
 import { isNil } from 'lodash'
 
 import { InfluencerPayload, LoginInfluencerPayload, MutationCreateInfluencerArgs, MutationLoginInfluencerArgs } from '@/generated/graphql'
@@ -7,6 +8,8 @@ import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, str
 import { Context } from '@/utils/context'
 
 const { Success, Error: ErrorMessage } = ResponseMessage
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 class InfluencerController {
   public static async createInfluencer(_: unknown, { input }: MutationCreateInfluencerArgs, ctx: Context): Promise<InfluencerPayload> {
@@ -40,12 +43,32 @@ class InfluencerController {
       return buildResponse({ success: false, message, code })
     }
   }
+
+  public static async loginInfluencerWithGoogle(_: unknown, { input }: { input: { accessToken: string } }, ctx: Context): Promise<LoginInfluencerPayload> {
+    try {
+      const tokenInfo = await googleClient.getTokenInfo(input.accessToken)
+      if (!tokenInfo.email) throw new CustomError('401', ErrorMessage.InvalidCredential)
+
+      const { influencer } = await InfluencerRepository.findOrCreateByGoogle(
+        tokenInfo.email,
+        tokenInfo.email.split('@')[0],
+        '',
+      )
+
+      const token = JWTUtils.sign({ id: String(influencer.id), type: 'INFLUENCER' })
+      return buildResponse({ success: true, data: { token, influencer }, message: Success.Login })
+    } catch (err) {
+      const { code, message } = formatError('loginInfluencerWithGoogle', err, ctx.requestUUID)
+      return buildResponse({ success: false, message, code })
+    }
+  }
 }
 
 const mutations = {
   Mutation: {
     createInfluencer: InfluencerController.createInfluencer,
     loginInfluencer: InfluencerController.loginInfluencer,
+    loginInfluencerWithGoogle: InfluencerController.loginInfluencerWithGoogle,
   },
 }
 
