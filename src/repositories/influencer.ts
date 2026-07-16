@@ -23,6 +23,20 @@ class InfluencerRepository {
     return Influencer.findByPk(id)
   }
 
+  public static findByLineId(lineId: string) {
+    return Influencer.findOne({ where: { lineId } })
+  }
+
+  public static async linkLineId(id: number, lineId: string) {
+    await Influencer.update({ lineId }, { where: { id } })
+    return Influencer.findByPk(id)
+  }
+
+  public static async update(id: number, payload: Partial<InfluencerCreationAttributes>) {
+    await Influencer.update(payload, { where: { id } })
+    return Influencer.findByPk(id)
+  }
+
   public static list() {
     return Influencer.findAll({
       order: [['id', 'ASC']],

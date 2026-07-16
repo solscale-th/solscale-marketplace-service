@@ -47,6 +47,16 @@ spec:
                 configMapKeyRef:
                   name: env-config-store
                   key: google.client.id
+            - name: LINE_CHANNEL_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-store
+                  key: line.channel.id
+            - name: LINE_CHANNEL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret-store
+                  key: line.channel.secret
             - name: DB_HOST
               value: "127.0.0.1"
             - name: DB_PORT

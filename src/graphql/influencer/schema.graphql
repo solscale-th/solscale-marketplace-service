@@ -48,6 +48,15 @@ input LoginInfluencerWithGoogleInput {
   idToken: String!
 }
 
+input LoginInfluencerWithLineInput {
+  code: String!
+  redirectUri: String!
+}
+
+input UpdateInfluencerInput {
+  email: String
+}
+
 input CreateInfluencerInput {
   email: String!
   password: String!
@@ -74,4 +83,6 @@ type Mutation {
   createInfluencer(input: CreateInfluencerInput!): InfluencerPayload
   loginInfluencer(input: LoginInfluencerInput!): LoginInfluencerPayload
   loginInfluencerWithGoogle(input: LoginInfluencerWithGoogleInput!): LoginInfluencerPayload
+  loginInfluencerWithLine(input: LoginInfluencerWithLineInput!): LoginInfluencerPayload
+  updateInfluencer(input: UpdateInfluencerInput!): InfluencerPayload
 }

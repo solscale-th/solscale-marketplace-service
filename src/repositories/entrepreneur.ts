@@ -23,6 +23,15 @@ class EntrepreneurRepository {
     return Entrepreneur.findByPk(id)
   }
 
+  public static findByLineId(lineId: string) {
+    return Entrepreneur.findOne({ where: { lineId } })
+  }
+
+  public static async linkLineId(id: number, lineId: string) {
+    await Entrepreneur.update({ lineId }, { where: { id } })
+    return Entrepreneur.findByPk(id)
+  }
+
   public static async update(id: number, payload: Partial<EntrepreneurCreationAttributes>) {
     await Entrepreneur.update(payload, { where: { id } })
     return Entrepreneur.findByPk(id)

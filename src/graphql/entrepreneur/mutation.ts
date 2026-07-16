@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt'
 import { isNil } from 'lodash'
 
-import { EntrepreneurPayload, LoginEntrepreneurPayload, MutationCreateEntrepreneurArgs, MutationLoginEntrepreneurArgs, MutationLoginEntrepreneurWithGoogleArgs, MutationUpdateEntrepreneurArgs } from '@/generated/graphql'
+import { EntrepreneurPayload, LoginEntrepreneurPayload, MutationCreateEntrepreneurArgs, MutationLoginEntrepreneurArgs, MutationLoginEntrepreneurWithGoogleArgs, MutationLoginEntrepreneurWithLineArgs, MutationUpdateEntrepreneurArgs } from '@/generated/graphql'
 import { EntrepreneurRepository, InfluencerRepository } from '@/repositories'
-import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleIdToken } from '@/utils'
+import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleIdToken, verifyLineCode } from '@/utils'
 import { Context } from '@/utils/context'
 
 const { Success, Error: ErrorMessage } = ResponseMessage
@@ -26,7 +26,7 @@ class EntrepreneurController {
   public static async loginEntrepreneur(_: unknown, { input }: MutationLoginEntrepreneurArgs, ctx: Context): Promise<LoginEntrepreneurPayload> {
     try {
       const entrepreneur = await EntrepreneurRepository.findByEmail(input.email)
-      if (isNil(entrepreneur))
+      if (isNil(entrepreneur) || isNil(entrepreneur.password))
         throw new CustomError('401', ErrorMessage.InvalidCredential)
 
       const isPasswordValid = await bcrypt.compare(input.password, entrepreneur.password)
@@ -77,10 +77,54 @@ class EntrepreneurController {
     }
   }
 
+  public static async loginEntrepreneurWithLine(_: unknown, { input }: MutationLoginEntrepreneurWithLineArgs, ctx: Context): Promise<LoginEntrepreneurPayload> {
+    try {
+      const profile = await verifyLineCode(input.code, input.redirectUri)
+
+      let entrepreneur = await EntrepreneurRepository.findByLineId(profile.lineId)
+
+      if (isNil(entrepreneur)) {
+        const existingByEmail = profile.email ? await EntrepreneurRepository.findByEmail(profile.email) : null
+
+        if (!isNil(existingByEmail)) {
+          entrepreneur = await EntrepreneurRepository.linkLineId(existingByEmail.id, profile.lineId)
+        } else {
+          if (profile.email) {
+            const existingInfluencer = await InfluencerRepository.findByEmail(profile.email)
+            if (!isNil(existingInfluencer))
+              throw new CustomError('409', ErrorMessage.DuplicatedRecord)
+          }
+
+          entrepreneur = await EntrepreneurRepository.create({
+            email: profile.email ?? null,
+            password: null,
+            lineId: profile.lineId,
+            companyName: '',
+          })
+        }
+      }
+
+      if (isNil(entrepreneur))
+        throw new CustomError('500', ErrorMessage.Internal)
+
+      const token = JWTUtils.sign({ id: String(entrepreneur.id), type: 'ENTREPRENEUR' })
+      return buildResponse({ success: true, data: { token, entrepreneur }, message: Success.Login })
+    } catch (err) {
+      const { code, message } = formatError('loginEntrepreneurWithLine', err, ctx.requestUUID)
+      return buildResponse({ success: false, message, code })
+    }
+  }
+
   public static async updateEntrepreneur(_: unknown, { input }: MutationUpdateEntrepreneurArgs, ctx: Context): Promise<EntrepreneurPayload> {
     try {
       if (isNil(ctx.id) || ctx.type !== 'ENTREPRENEUR')
         throw new CustomError('401', ErrorMessage.Unauthorized)
+
+      if (input.email) {
+        const existingInfluencer = await InfluencerRepository.findByEmail(input.email)
+        if (!isNil(existingInfluencer))
+          throw new CustomError('409', ErrorMessage.DuplicatedRecord)
+      }
 
       const data = await EntrepreneurRepository.update(Number(ctx.id), stripNulls(input))
       return buildResponse({ success: true, data, message: Success.Update })
@@ -96,6 +140,7 @@ const mutations = {
     createEntrepreneur: EntrepreneurController.createEntrepreneur,
     loginEntrepreneur: EntrepreneurController.loginEntrepreneur,
     loginEntrepreneurWithGoogle: EntrepreneurController.loginEntrepreneurWithGoogle,
+    loginEntrepreneurWithLine: EntrepreneurController.loginEntrepreneurWithLine,
     updateEntrepreneur: EntrepreneurController.updateEntrepreneur,
   },
 }

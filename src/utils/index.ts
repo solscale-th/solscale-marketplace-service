@@ -5,6 +5,7 @@ import dir from './dir'
 import { CustomError, formatError } from './error'
 import { verifyGoogleIdToken } from './google-auth'
 import { JWTUtils } from './jwt'
+import { verifyLineCode } from './line-auth'
 import { requestLogger, writeLog } from './logger'
 import { stripNulls } from './object'
 import { buildResponse } from './response'
@@ -22,6 +23,7 @@ export {
   JWTUtils,
   stripNulls,
   verifyGoogleIdToken,
+  verifyLineCode,
 }
 
 export type {

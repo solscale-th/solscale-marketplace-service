@@ -40,8 +40,14 @@ input LoginEntrepreneurWithGoogleInput {
   idToken: String!
 }
 
+input LoginEntrepreneurWithLineInput {
+  code: String!
+  redirectUri: String!
+}
+
 input UpdateEntrepreneurInput {
-  companyName: String!
+  companyName: String
+  email: String
 }
 
 input CreateEntrepreneurInput {
@@ -64,5 +70,6 @@ type Mutation {
   createEntrepreneur(input: CreateEntrepreneurInput!): EntrepreneurPayload
   loginEntrepreneur(input: LoginEntrepreneurInput!): LoginEntrepreneurPayload
   loginEntrepreneurWithGoogle(input: LoginEntrepreneurWithGoogleInput!): LoginEntrepreneurPayload
+  loginEntrepreneurWithLine(input: LoginEntrepreneurWithLineInput!): LoginEntrepreneurPayload
   updateEntrepreneur(input: UpdateEntrepreneurInput!): EntrepreneurPayload
 }
