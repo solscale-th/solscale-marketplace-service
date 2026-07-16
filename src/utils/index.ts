@@ -3,6 +3,7 @@ import { ErrorCode, ResponseMessage } from './constant'
 import { Context } from './context'
 import dir from './dir'
 import { CustomError, formatError } from './error'
+import { verifyGoogleIdToken } from './google-auth'
 import { JWTUtils } from './jwt'
 import { requestLogger, writeLog } from './logger'
 import { stripNulls } from './object'
@@ -20,6 +21,7 @@ export {
   buildResponse,
   JWTUtils,
   stripNulls,
+  verifyGoogleIdToken,
 }
 
 export type {

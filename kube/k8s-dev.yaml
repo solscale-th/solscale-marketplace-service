@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: store-service
-  namespace: YOUR_NAMESPACE
+  namespace: sol-scale-dev
 spec:
   replicas: 1
   selector:
@@ -24,9 +24,10 @@ spec:
         tier: backend
         track: stable
     spec:
+      serviceAccountName: store-service
       containers:
         - name: store-service
-          image: IMAGE_TAG
+          image: asia-southeast2-docker.pkg.dev/project-fc5426d4-53ee-47af-8fb/development/store-service
           resources:
             limits:
               memory: "2Gi"
@@ -41,11 +42,13 @@ spec:
               value: "Store Service"
             - name: APP_VERSION
               value: "0.1.0"
-            - name: DB_HOST
+            - name: GOOGLE_CLIENT_ID
               valueFrom:
                 configMapKeyRef:
                   name: env-config-store
-                  key: db.host
+                  key: google.client.id
+            - name: DB_HOST
+              value: "127.0.0.1"
             - name: DB_PORT
               valueFrom:
                 configMapKeyRef:
@@ -106,13 +109,28 @@ spec:
             timeoutSeconds: 10
             periodSeconds: 30
             failureThreshold: 5
+
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.0
+          args:
+            - "--structured-logs"
+            - "--port=5432"
+            - "project-fc5426d4-53ee-47af-8fb:asia-southeast1:sol-scale"
+          securityContext:
+            runAsNonRoot: true
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
   name: store-service
-  namespace: YOUR_NAMESPACE
+  namespace: sol-scale-dev
   labels:
     name: store-service
 spec:

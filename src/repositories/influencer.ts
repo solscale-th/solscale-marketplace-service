@@ -6,12 +6,21 @@ const SALT_ROUNDS = 10
 
 class InfluencerRepository {
   public static async create(payload: InfluencerCreationAttributes) {
-    const password = await bcrypt.hash(payload.password, SALT_ROUNDS)
+    const password = payload.password ? await bcrypt.hash(payload.password, SALT_ROUNDS) : null
     return Influencer.create({ ...payload, password })
   }
 
   public static findByEmail(email: string) {
     return Influencer.findOne({ where: { email } })
+  }
+
+  public static findByGoogleId(googleId: string) {
+    return Influencer.findOne({ where: { googleId } })
+  }
+
+  public static async linkGoogleId(id: number, googleId: string) {
+    await Influencer.update({ googleId }, { where: { id } })
+    return Influencer.findByPk(id)
   }
 
   public static list() {

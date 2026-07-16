@@ -4,7 +4,8 @@ import { DataTypes, Model, Optional } from 'sequelize'
 export interface InfluencerAttributes {
   id: number;
   email: string;
-  password: string;
+  password: string | null;
+  googleId?: string | null;
   firstName: string;
   lastName: string;
   stageName?: string;
@@ -25,13 +26,14 @@ export interface InfluencerAttributes {
 
 export type InfluencerPk = 'id'
 export type InfluencerId = Influencer[InfluencerPk]
-export type InfluencerOptionalAttributes = 'id' | 'stageName' | 'age' | 'avatarUrl' | 'platforms' | 'contentCategories' | 'languages' | 'bankName' | 'bankAccountName' | 'bankAccountNumber' | 'otherPhotos' | 'averageRating' | 'reviewCount' | 'createdAt' | 'updatedAt'
+export type InfluencerOptionalAttributes = 'id' | 'password' | 'googleId' | 'stageName' | 'age' | 'avatarUrl' | 'platforms' | 'contentCategories' | 'languages' | 'bankName' | 'bankAccountName' | 'bankAccountNumber' | 'otherPhotos' | 'averageRating' | 'reviewCount' | 'createdAt' | 'updatedAt'
 export type InfluencerCreationAttributes = Optional<InfluencerAttributes, InfluencerOptionalAttributes>
 
 export class Influencer extends Model<InfluencerAttributes, InfluencerCreationAttributes> implements InfluencerAttributes {
   id!: number
   email!: string
-  password!: string
+  password!: string | null
+  googleId?: string | null
   firstName!: string
   lastName!: string
   stageName?: string
@@ -64,7 +66,12 @@ export class Influencer extends Model<InfluencerAttributes, InfluencerCreationAt
       },
       password: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
+      },
+      googleId: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        unique: true,
       },
       firstName: {
         type: DataTypes.TEXT,
@@ -139,6 +146,11 @@ export class Influencer extends Model<InfluencerAttributes, InfluencerCreationAt
           name: 'influencer_email_key',
           unique: true,
           fields: [{ name: 'email' }],
+        },
+        {
+          name: 'influencer_google_id_key',
+          unique: true,
+          fields: [{ name: 'googleId' }],
         },
       ],
     })
