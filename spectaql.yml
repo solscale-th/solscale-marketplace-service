@@ -1,0 +1,26 @@
+spectaql:
+  displayAllServers: true
+
+introspection:
+  schemaFile: ./src/graphql/**/schema.graphql
+  removeTrailingPeriodFromDescriptions: false
+
+info:
+  title: Solscale Marketplace API Reference
+  description: |
+    GraphQL API for the Solscale influencer marketplace (entrepreneurs, influencers,
+    jobs, applications/invites, and engagements).
+
+    All mutations that require a logged-in user expect a bearer token obtained from
+    `loginEntrepreneur` or `loginInfluencer` (or their Google/LINE variants), sent as
+    `Authorization: Bearer <token>`.
+
+servers:
+  - url: http://localhost:8000/graphql
+    description: Local development
+  - url: https://api-dev.solscale.co/graphql
+    description: Development
+    headers:
+      - name: Authorization
+        example: Bearer <YOUR_TOKEN_HERE>
+        comment: Required for any query/mutation that reads ctx.id/ctx.type

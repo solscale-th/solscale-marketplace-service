@@ -12,6 +12,8 @@ type Job {
   duration: String
   budgetMin: Int
   budgetMax: Int
+  startAt: DateTime
+  endAt: DateTime
   status: String
   promoted: Boolean
   createdAt: DateTime
@@ -41,6 +43,8 @@ input CreateJobInput {
   duration: String
   budgetMin: Int
   budgetMax: Int
+  startAt: DateTime
+  endAt: DateTime
 }
 
 input UpdateJobInput {
@@ -56,11 +60,21 @@ input UpdateJobInput {
   duration: String
   budgetMin: Int
   budgetMax: Int
+  startAt: DateTime
+  endAt: DateTime
   status: String
 }
 
+input JobFilterInput {
+  platforms: [String!]
+  tags: [String!]
+  location: String
+  budgetMin: Int
+  budgetMax: Int
+}
+
 type Query {
-  jobs: JobsPayload
+  jobs(limit: Int, offset: Int, search: String, filter: JobFilterInput): JobsPayload
   job(id: Int!): JobPayload
   myJobs: JobsPayload
 }

@@ -15,6 +15,8 @@ export interface JobAttributes {
   duration?: string;
   budgetMin?: number;
   budgetMax?: number;
+  startAt?: Date;
+  endAt?: Date;
   status: string;
   promoted: boolean;
   createdAt?: Date;
@@ -23,7 +25,7 @@ export interface JobAttributes {
 
 export type JobPk = 'id'
 export type JobId = Job[JobPk]
-export type JobOptionalAttributes = 'id' | 'brief' | 'deliverables' | 'requirements' | 'tags' | 'location' | 'duration' | 'budgetMin' | 'budgetMax' | 'status' | 'promoted' | 'createdAt' | 'updatedAt'
+export type JobOptionalAttributes = 'id' | 'brief' | 'deliverables' | 'requirements' | 'tags' | 'location' | 'duration' | 'budgetMin' | 'budgetMax' | 'startAt' | 'endAt' | 'status' | 'promoted' | 'createdAt' | 'updatedAt'
 export type JobCreationAttributes = Optional<JobAttributes, JobOptionalAttributes>
 
 export class Job extends Model<JobAttributes, JobCreationAttributes> implements JobAttributes {
@@ -40,6 +42,8 @@ export class Job extends Model<JobAttributes, JobCreationAttributes> implements 
   duration?: string
   budgetMin?: number
   budgetMax?: number
+  startAt?: Date
+  endAt?: Date
   status!: string
   promoted!: boolean
   createdAt!: Date
@@ -99,6 +103,14 @@ export class Job extends Model<JobAttributes, JobCreationAttributes> implements 
       },
       budgetMax: {
         type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      startAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      endAt: {
+        type: DataTypes.DATE,
         allowNull: true,
       },
       status: {

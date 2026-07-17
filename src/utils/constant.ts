@@ -17,6 +17,8 @@ export const ResponseMessage = {
     DuplicatedRecord: 'Duplicated record',
     RequiredFields: 'Please fill in required fields',
     Unauthorized: 'You must be logged in to perform this action',
+    NotFound: 'Record not found',
+    JobNotOpen: 'This job is not open for applications',
   },
 }
 

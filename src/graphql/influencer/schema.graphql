@@ -55,6 +55,18 @@ input LoginInfluencerWithLineInput {
 
 input UpdateInfluencerInput {
   email: String
+  firstName: String
+  lastName: String
+  stageName: String
+  age: Int
+  avatarUrl: String
+  platforms: [String!]
+  contentCategories: [String!]
+  languages: [String!]
+  bankName: String
+  bankAccountName: String
+  bankAccountNumber: String
+  otherPhotos: [String!]
 }
 
 input CreateInfluencerInput {

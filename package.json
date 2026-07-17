@@ -19,6 +19,8 @@
     "migrate": "sequelize-cli db:migrate",
     "migrate:undo": "sequelize-cli db:migrate:undo",
     "seed": "sequelize-cli db:seed:all",
+    "docs:build": "spectaql spectaql.yml --target-dir docs/api",
+    "docs:dev": "spectaql spectaql.yml --target-dir docs/api -D",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -58,6 +60,7 @@
     "nodemon": "^3.1.11",
     "prettier": "~3.2.5",
     "sequelize-cli": "^6.6.5",
+    "spectaql": "^3.0.9",
     "typescript": "~5.3.3",
     "typescript-eslint": "^8.36.0"
   },

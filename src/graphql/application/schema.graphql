@@ -1,0 +1,32 @@
+type Application {
+  id: Int
+  jobId: Int
+  influencerId: Int
+  source: String
+  status: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  job: Job
+}
+
+type ApplicationPayload {
+  data: Application
+  status: StatusPayload
+}
+
+type ApplicationsPayload {
+  data: [Application]
+  status: StatusPayload
+}
+
+type Query {
+  myApplications: ApplicationsPayload
+  myDirectInvites: ApplicationsPayload
+}
+
+type Mutation {
+  applyToJob(jobId: Int!): ApplicationPayload
+  withdrawApplication(id: Int!): ApplicationPayload
+  acceptInvite(id: Int!): ApplicationPayload
+  declineInvite(id: Int!): ApplicationPayload
+}

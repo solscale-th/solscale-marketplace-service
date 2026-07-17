@@ -1,0 +1,47 @@
+type Submission {
+  id: Int
+  engagementId: Int
+  links: [String!]
+  note: String
+  status: String
+  reviewNote: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type Engagement {
+  id: Int
+  applicationId: Int
+  jobId: Int
+  influencerId: Int
+  workStatus: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  job: Job
+  submissions: [Submission!]
+}
+
+type EngagementPayload {
+  data: Engagement
+  status: StatusPayload
+}
+
+type EngagementsPayload {
+  data: [Engagement]
+  status: StatusPayload
+}
+
+input SubmitWorkInput {
+  engagementId: Int!
+  links: [String!]!
+  note: String
+}
+
+type Query {
+  myEngagements: EngagementsPayload
+  engagement(id: Int!): EngagementPayload
+}
+
+type Mutation {
+  submitWork(input: SubmitWorkInput!): EngagementPayload
+}
