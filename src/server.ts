@@ -70,6 +70,7 @@ export default async () => {
   )
 
   app.use('/api', router)
+  app.use('/docs', express.static('docs/api'))
 
   app.get(
     '/healthz',

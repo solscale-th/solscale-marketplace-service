@@ -12,6 +12,7 @@ RUN mkdir /app/node_modules
 RUN npm ci
 
 RUN npm run build
+RUN npm run docs:build
 
 ENTRYPOINT ["node", "dist/index.js"]
 
