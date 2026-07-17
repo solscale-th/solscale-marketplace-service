@@ -1,4 +1,4 @@
-import { InfluencerPayload, InfluencersPayload, QueryInfluencerArgs } from '@/generated/graphql'
+import { InfluencerPayload, InfluencersPayload, QueryInfluencerArgs, QueryInfluencersArgs } from '@/generated/graphql'
 import { InfluencerRepository } from '@/repositories'
 import { buildResponse, formatError, ResponseMessage } from '@/utils'
 import { Context } from '@/utils/context'
@@ -6,9 +6,20 @@ import { Context } from '@/utils/context'
 const { Success } = ResponseMessage
 
 class InfluencerController {
-  public static async influencers(_: unknown, __: unknown, ctx: Context): Promise<InfluencersPayload> {
+  public static async influencers(_: unknown, { limit, offset, search, filter }: QueryInfluencersArgs, ctx: Context): Promise<InfluencersPayload> {
     try {
-      const data = await InfluencerRepository.list()
+      const data = await InfluencerRepository.list({
+        limit: limit ?? undefined,
+        offset: offset ?? undefined,
+        search: search ?? undefined,
+        filter: filter
+          ? {
+            categories: filter.categories ?? undefined,
+            platforms: filter.platforms ?? undefined,
+            languages: filter.languages ?? undefined,
+          }
+          : undefined,
+      })
       return buildResponse({ success: true, data, message: Success.Query })
     } catch (err) {
       const { code, message } = formatError('influencers', err, ctx.requestUUID)

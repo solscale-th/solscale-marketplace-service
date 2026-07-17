@@ -3,7 +3,7 @@ import { isNil } from 'lodash'
 
 import { InfluencerPayload, LoginInfluencerPayload, MutationCreateInfluencerArgs, MutationLoginInfluencerArgs, MutationLoginInfluencerWithGoogleArgs, MutationLoginInfluencerWithLineArgs, MutationUpdateInfluencerArgs } from '@/generated/graphql'
 import { EntrepreneurRepository, InfluencerRepository } from '@/repositories'
-import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleIdToken, verifyLineCode } from '@/utils'
+import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleAccessToken, verifyLineCode } from '@/utils'
 import { Context } from '@/utils/context'
 
 const { Success, Error: ErrorMessage } = ResponseMessage
@@ -43,7 +43,7 @@ class InfluencerController {
 
   public static async loginInfluencerWithGoogle(_: unknown, { input }: MutationLoginInfluencerWithGoogleArgs, ctx: Context): Promise<LoginInfluencerPayload> {
     try {
-      const profile = await verifyGoogleIdToken(input.idToken)
+      const profile = await verifyGoogleAccessToken(input.accessToken)
 
       let influencer = await InfluencerRepository.findByGoogleId(profile.googleId)
 

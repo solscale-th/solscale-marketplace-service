@@ -37,7 +37,7 @@ input LoginEntrepreneurInput {
 }
 
 input LoginEntrepreneurWithGoogleInput {
-  idToken: String!
+  accessToken: String!
 }
 
 input LoginEntrepreneurWithLineInput {

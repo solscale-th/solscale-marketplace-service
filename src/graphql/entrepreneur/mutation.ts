@@ -3,7 +3,7 @@ import { isNil } from 'lodash'
 
 import { EntrepreneurPayload, LoginEntrepreneurPayload, MutationCreateEntrepreneurArgs, MutationLoginEntrepreneurArgs, MutationLoginEntrepreneurWithGoogleArgs, MutationLoginEntrepreneurWithLineArgs, MutationUpdateEntrepreneurArgs } from '@/generated/graphql'
 import { EntrepreneurRepository, InfluencerRepository } from '@/repositories'
-import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleIdToken, verifyLineCode } from '@/utils'
+import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleAccessToken, verifyLineCode } from '@/utils'
 import { Context } from '@/utils/context'
 
 const { Success, Error: ErrorMessage } = ResponseMessage
@@ -43,7 +43,7 @@ class EntrepreneurController {
 
   public static async loginEntrepreneurWithGoogle(_: unknown, { input }: MutationLoginEntrepreneurWithGoogleArgs, ctx: Context): Promise<LoginEntrepreneurPayload> {
     try {
-      const profile = await verifyGoogleIdToken(input.idToken)
+      const profile = await verifyGoogleAccessToken(input.accessToken)
 
       let entrepreneur = await EntrepreneurRepository.findByGoogleId(profile.googleId)
 

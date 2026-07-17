@@ -45,7 +45,7 @@ input LoginInfluencerInput {
 }
 
 input LoginInfluencerWithGoogleInput {
-  idToken: String!
+  accessToken: String!
 }
 
 input LoginInfluencerWithLineInput {
@@ -74,8 +74,14 @@ input CreateInfluencerInput {
   otherPhotos: [String!]
 }
 
+input InfluencerFilterInput {
+  categories: [String!]
+  platforms: [String!]
+  languages: [String!]
+}
+
 type Query {
-  influencers: InfluencersPayload
+  influencers(limit: Int, offset: Int, search: String, filter: InfluencerFilterInput): InfluencersPayload
   influencer(id: Int!): InfluencerPayload
 }
 

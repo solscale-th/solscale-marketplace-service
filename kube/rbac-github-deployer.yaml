@@ -1,0 +1,44 @@
+# RBAC for the github-deployer GCP service account used by
+# .github/workflows/development.yml to deploy via kubectl.
+#
+# The built-in "edit" ClusterRole (bound via a separate RoleBinding, see
+# README/setup notes) covers Deployments/Services/Ingresses, but does not
+# aggregate the GKE-specific ManagedCertificate CRD, so it needs its own
+# narrow Role here.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: github-deployer-managedcert
+  namespace: sol-scale-dev
+rules:
+  - apiGroups: ["networking.gke.io"]
+    resources: ["managedcertificates"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: github-deployer-managedcert
+  namespace: sol-scale-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: github-deployer-managedcert
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: github-deployer@project-fc5426d4-53ee-47af-8fb.iam.gserviceaccount.com
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: github-deployer-edit
+  namespace: sol-scale-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: github-deployer@project-fc5426d4-53ee-47af-8fb.iam.gserviceaccount.com

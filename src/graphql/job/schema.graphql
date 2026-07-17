@@ -1,0 +1,71 @@
+type Job {
+  id: Int
+  entrepreneurId: Int
+  title: String
+  description: String
+  brief: String
+  platform: String
+  deliverables: [String!]
+  requirements: [String!]
+  tags: [String!]
+  location: String
+  duration: String
+  budgetMin: Int
+  budgetMax: Int
+  status: String
+  promoted: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  entrepreneur: Entrepreneur
+}
+
+type JobPayload {
+  data: Job
+  status: StatusPayload
+}
+
+type JobsPayload {
+  data: [Job]
+  status: StatusPayload
+}
+
+input CreateJobInput {
+  title: String!
+  description: String!
+  brief: String
+  platform: String!
+  deliverables: [String!]
+  requirements: [String!]
+  tags: [String!]
+  location: String
+  duration: String
+  budgetMin: Int
+  budgetMax: Int
+}
+
+input UpdateJobInput {
+  id: Int!
+  title: String
+  description: String
+  brief: String
+  platform: String
+  deliverables: [String!]
+  requirements: [String!]
+  tags: [String!]
+  location: String
+  duration: String
+  budgetMin: Int
+  budgetMax: Int
+  status: String
+}
+
+type Query {
+  jobs: JobsPayload
+  job(id: Int!): JobPayload
+  myJobs: JobsPayload
+}
+
+type Mutation {
+  createJob(input: CreateJobInput!): JobPayload
+  updateJob(input: UpdateJobInput!): JobPayload
+}
