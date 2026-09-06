@@ -1,7 +1,7 @@
 import { isNil } from 'lodash'
 
 import { JobPayload, MutationCreateJobArgs, MutationUpdateJobArgs } from '@/generated/graphql'
-import { JobRepository } from '@/repositories'
+import { EntrepreneurRepository, JobRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, ResponseMessage, stripNulls } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -33,6 +33,12 @@ class JobController {
       const existing = await JobRepository.findById(id)
       if (isNil(existing) || existing.entrepreneurId !== Number(ctx.id))
         throw new CustomError('401', ErrorMessage.Unauthorized)
+
+      if (rest.status === 'active') {
+        const entrepreneur = await EntrepreneurRepository.findById(existing.entrepreneurId)
+        if (isNil(entrepreneur) || entrepreneur.depositBalance <= 0)
+          throw new CustomError('400', ErrorMessage.EntrepreneurNotDeposited)
+      }
 
       const data = await JobRepository.update(id, stripNulls(rest))
       return buildResponse({ success: true, data, message: Success.Update })

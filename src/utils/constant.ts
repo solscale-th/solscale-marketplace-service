@@ -19,6 +19,8 @@ export const ResponseMessage = {
     Unauthorized: 'You must be logged in to perform this action',
     NotFound: 'Record not found',
     JobNotOpen: 'This job is not open for applications',
+    EntrepreneurNotDeposited: 'Deposit funds to your account before activating a job',
+    InvalidDepositAmount: 'Deposit amount must be greater than zero',
   },
 }
 

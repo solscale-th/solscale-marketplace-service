@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import { isNil } from 'lodash'
 
-import { EntrepreneurPayload, LoginEntrepreneurPayload, MutationCreateEntrepreneurArgs, MutationLoginEntrepreneurArgs, MutationLoginEntrepreneurWithGoogleArgs, MutationLoginEntrepreneurWithLineArgs, MutationUpdateEntrepreneurArgs } from '@/generated/graphql'
+import { EntrepreneurPayload, LoginEntrepreneurPayload, MutationCreateEntrepreneurArgs, MutationDepositFundsArgs, MutationLoginEntrepreneurArgs, MutationLoginEntrepreneurWithGoogleArgs, MutationLoginEntrepreneurWithLineArgs, MutationUpdateEntrepreneurArgs } from '@/generated/graphql'
 import { EntrepreneurRepository, InfluencerRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleAccessToken, verifyLineCode } from '@/utils'
 import { Context } from '@/utils/context'
@@ -133,6 +133,22 @@ class EntrepreneurController {
       return buildResponse({ success: false, message, code })
     }
   }
+
+  public static async depositFunds(_: unknown, { input }: MutationDepositFundsArgs, ctx: Context): Promise<EntrepreneurPayload> {
+    try {
+      if (isNil(ctx.id) || ctx.type !== 'ENTREPRENEUR')
+        throw new CustomError('401', ErrorMessage.Unauthorized)
+
+      if (input.amount <= 0)
+        throw new CustomError('400', ErrorMessage.InvalidDepositAmount)
+
+      const data = await EntrepreneurRepository.depositFunds(Number(ctx.id), input.amount)
+      return buildResponse({ success: true, data, message: Success.Update })
+    } catch (err) {
+      const { code, message } = formatError('depositFunds', err, ctx.requestUUID)
+      return buildResponse({ success: false, message, code })
+    }
+  }
 }
 
 const mutations = {
@@ -142,6 +158,7 @@ const mutations = {
     loginEntrepreneurWithGoogle: EntrepreneurController.loginEntrepreneurWithGoogle,
     loginEntrepreneurWithLine: EntrepreneurController.loginEntrepreneurWithLine,
     updateEntrepreneur: EntrepreneurController.updateEntrepreneur,
+    depositFunds: EntrepreneurController.depositFunds,
   },
 }
 

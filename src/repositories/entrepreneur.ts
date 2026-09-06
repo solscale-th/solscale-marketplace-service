@@ -46,6 +46,11 @@ class EntrepreneurRepository {
   public static findById(id: number) {
     return Entrepreneur.findByPk(id)
   }
+
+  public static async depositFunds(id: number, amount: number) {
+    await Entrepreneur.increment('depositBalance', { by: amount, where: { id } })
+    return Entrepreneur.findByPk(id)
+  }
 }
 
 export default EntrepreneurRepository

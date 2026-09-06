@@ -13,13 +13,14 @@ export interface EntrepreneurAttributes {
   bankName?: string;
   bankAccountName?: string;
   bankAccountNumber?: string;
+  depositBalance?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 export type EntrepreneurPk = 'id'
 export type EntrepreneurId = Entrepreneur[EntrepreneurPk]
-export type EntrepreneurOptionalAttributes = 'id' | 'email' | 'password' | 'googleId' | 'lineId' | 'brandDescription' | 'logoUrl' | 'bankName' | 'bankAccountName' | 'bankAccountNumber' | 'createdAt' | 'updatedAt'
+export type EntrepreneurOptionalAttributes = 'id' | 'email' | 'password' | 'googleId' | 'lineId' | 'brandDescription' | 'logoUrl' | 'bankName' | 'bankAccountName' | 'bankAccountNumber' | 'depositBalance' | 'createdAt' | 'updatedAt'
 export type EntrepreneurCreationAttributes = Optional<EntrepreneurAttributes, EntrepreneurOptionalAttributes>
 
 export class Entrepreneur extends Model<EntrepreneurAttributes, EntrepreneurCreationAttributes> implements EntrepreneurAttributes {
@@ -34,6 +35,7 @@ export class Entrepreneur extends Model<EntrepreneurAttributes, EntrepreneurCrea
   bankName?: string
   bankAccountName?: string
   bankAccountNumber?: string
+  depositBalance!: number
   createdAt!: Date
   updatedAt!: Date
 
@@ -87,6 +89,11 @@ export class Entrepreneur extends Model<EntrepreneurAttributes, EntrepreneurCrea
       bankAccountNumber: {
         type: DataTypes.TEXT,
         allowNull: true,
+      },
+      depositBalance: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
       },
     }, {
       sequelize,
