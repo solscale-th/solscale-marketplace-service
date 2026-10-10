@@ -45,6 +45,7 @@ input CreateJobInput {
   budgetMax: Int
   startAt: DateTime
   endAt: DateTime
+  inviteInfluencerIds: [Int!]
 }
 
 input UpdateJobInput {

@@ -1,7 +1,7 @@
 import { isNil } from 'lodash'
 
 import { JobPayload, MutationCreateJobArgs, MutationUpdateJobArgs } from '@/generated/graphql'
-import { EntrepreneurRepository, JobRepository } from '@/repositories'
+import { ApplicationRepository, EntrepreneurRepository, JobRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, ResponseMessage, stripNulls } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -13,10 +13,22 @@ class JobController {
       if (isNil(ctx.id) || ctx.type !== 'ENTREPRENEUR')
         throw new CustomError('401', ErrorMessage.Unauthorized)
 
+      const { inviteInfluencerIds, ...jobInput } = input
       const data = await JobRepository.create({
-        ...stripNulls(input),
+        ...stripNulls(jobInput),
         entrepreneurId: Number(ctx.id),
       })
+
+      const uniqueInfluencerIds = [...new Set(inviteInfluencerIds ?? [])]
+      await Promise.all(uniqueInfluencerIds.map((influencerId) =>
+        ApplicationRepository.create({
+          jobId: data.id,
+          influencerId,
+          source: 'invite',
+          status: 'pending',
+        })
+      ))
+
       return buildResponse({ success: true, data, message: Success.Mutation })
     } catch (err) {
       const { code, message } = formatError('createJob', err, ctx.requestUUID)
