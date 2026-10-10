@@ -7,6 +7,7 @@ type Application {
   createdAt: DateTime
   updatedAt: DateTime
   job: Job
+  influencer: Influencer
 }
 
 type ApplicationPayload {

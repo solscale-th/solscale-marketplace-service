@@ -1,7 +1,7 @@
 import { isNil } from 'lodash'
 
 import { JobPayload, JobsPayload, QueryJobArgs, QueryJobsArgs } from '@/generated/graphql'
-import { EntrepreneurRepository, JobRepository } from '@/repositories'
+import { ApplicationRepository, EntrepreneurRepository, JobRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, ResponseMessage } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -63,6 +63,12 @@ const queries = {
   },
   Job: {
     entrepreneur: (parent: { entrepreneurId: number }) => EntrepreneurRepository.findById(parent.entrepreneurId),
+    invites: (parent: { id: number, entrepreneurId: number }, _: unknown, ctx: Context) => {
+      if (isNil(ctx.id) || ctx.type !== 'ENTREPRENEUR' || Number(ctx.id) !== parent.entrepreneurId)
+        return []
+
+      return ApplicationRepository.listByJob(parent.id, 'invite')
+    },
   },
 }
 

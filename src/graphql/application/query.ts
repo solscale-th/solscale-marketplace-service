@@ -1,7 +1,7 @@
 import { isNil } from 'lodash'
 
 import { ApplicationsPayload } from '@/generated/graphql'
-import { ApplicationRepository, JobRepository } from '@/repositories'
+import { ApplicationRepository, InfluencerRepository, JobRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, ResponseMessage } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -42,6 +42,7 @@ const queries = {
   },
   Application: {
     job: (parent: { jobId: number }) => JobRepository.findById(parent.jobId),
+    influencer: (parent: { influencerId: number }) => InfluencerRepository.findById(parent.influencerId),
   },
 }
 

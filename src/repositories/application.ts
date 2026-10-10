@@ -16,6 +16,13 @@ class ApplicationRepository {
     })
   }
 
+  public static listByJob(jobId: number, source: string) {
+    return Application.findAll({
+      where: { jobId, source },
+      order: [['id', 'DESC']],
+    })
+  }
+
   public static async update(id: number, payload: Partial<ApplicationCreationAttributes>) {
     await Application.update(payload, { where: { id } })
     return Application.findByPk(id)

@@ -19,6 +19,7 @@ type Job {
   createdAt: DateTime
   updatedAt: DateTime
   entrepreneur: Entrepreneur
+  invites: [Application!]
 }
 
 type JobPayload {
