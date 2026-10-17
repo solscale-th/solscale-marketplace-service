@@ -13,8 +13,46 @@ type Influencer {
   bankAccountName: String
   bankAccountNumber: String
   otherPhotos: [String!]
+  countryCode: String
+  phone: String
+  bio: String
   averageRating: Float
   reviewCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  packages: [InfluencerPackage!]
+  addons: [InfluencerAddon!]
+  portfolio: [InfluencerPortfolioItem!]
+}
+
+type InfluencerPackage {
+  id: Int
+  influencerId: Int
+  tier: String
+  platform: String
+  price: Int
+  includes: [String!]
+  revisions: Int
+  turnaroundDays: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InfluencerAddon {
+  id: Int
+  influencerId: Int
+  kind: String
+  price: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type InfluencerPortfolioItem {
+  id: Int
+  influencerId: Int
+  title: String
+  platform: String
+  imageUrl: String
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -53,6 +91,26 @@ input LoginInfluencerWithLineInput {
   redirectUri: String!
 }
 
+input InfluencerPackageInput {
+  tier: String!
+  platform: String
+  price: Int!
+  includes: [String!]
+  revisions: Int
+  turnaroundDays: Int
+}
+
+input InfluencerAddonInput {
+  kind: String!
+  price: Int!
+}
+
+input InfluencerPortfolioItemInput {
+  title: String!
+  platform: String
+  imageUrl: String
+}
+
 input UpdateInfluencerInput {
   email: String
   firstName: String
@@ -67,6 +125,12 @@ input UpdateInfluencerInput {
   bankAccountName: String
   bankAccountNumber: String
   otherPhotos: [String!]
+  countryCode: String
+  phone: String
+  bio: String
+  packages: [InfluencerPackageInput!]
+  addons: [InfluencerAddonInput!]
+  portfolio: [InfluencerPortfolioItemInput!]
 }
 
 input CreateInfluencerInput {
@@ -84,6 +148,12 @@ input CreateInfluencerInput {
   bankAccountName: String
   bankAccountNumber: String
   otherPhotos: [String!]
+  countryCode: String
+  phone: String
+  bio: String
+  packages: [InfluencerPackageInput!]
+  addons: [InfluencerAddonInput!]
+  portfolio: [InfluencerPortfolioItemInput!]
 }
 
 input InfluencerFilterInput {

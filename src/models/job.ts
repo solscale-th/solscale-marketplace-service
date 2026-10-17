@@ -19,13 +19,23 @@ export interface JobAttributes {
   endAt?: Date;
   status: string;
   promoted: boolean;
+  visibility: string;
+  influencerId?: number;
+  postingDate?: string;
+  languages?: string[];
+  caption?: string;
+  requiredMessage?: string;
+  forbiddenMessage?: string;
+  packageName?: string;
+  packageDetail?: string;
+  packagePrice?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 export type JobPk = 'id'
 export type JobId = Job[JobPk]
-export type JobOptionalAttributes = 'id' | 'brief' | 'deliverables' | 'requirements' | 'tags' | 'location' | 'duration' | 'budgetMin' | 'budgetMax' | 'startAt' | 'endAt' | 'status' | 'promoted' | 'createdAt' | 'updatedAt'
+export type JobOptionalAttributes = 'id' | 'brief' | 'deliverables' | 'requirements' | 'tags' | 'location' | 'duration' | 'budgetMin' | 'budgetMax' | 'startAt' | 'endAt' | 'status' | 'promoted' | 'visibility' | 'influencerId' | 'postingDate' | 'languages' | 'caption' | 'requiredMessage' | 'forbiddenMessage' | 'packageName' | 'packageDetail' | 'packagePrice' | 'createdAt' | 'updatedAt'
 export type JobCreationAttributes = Optional<JobAttributes, JobOptionalAttributes>
 
 export class Job extends Model<JobAttributes, JobCreationAttributes> implements JobAttributes {
@@ -46,6 +56,16 @@ export class Job extends Model<JobAttributes, JobCreationAttributes> implements 
   endAt?: Date
   status!: string
   promoted!: boolean
+  visibility!: string
+  influencerId?: number
+  postingDate?: string
+  languages?: string[]
+  caption?: string
+  requiredMessage?: string
+  forbiddenMessage?: string
+  packageName?: string
+  packageDetail?: string
+  packagePrice?: number
   createdAt!: Date
   updatedAt!: Date
 
@@ -122,6 +142,47 @@ export class Job extends Model<JobAttributes, JobCreationAttributes> implements 
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
+      },
+      visibility: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        defaultValue: 'public',
+      },
+      influencerId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      postingDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+      },
+      languages: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+      },
+      caption: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      requiredMessage: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      forbiddenMessage: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      packageName: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      packageDetail: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      packagePrice: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
     }, {
       sequelize,

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'
 import { isNil } from 'lodash'
 
 import { InfluencerPayload, LoginInfluencerPayload, MutationCreateInfluencerArgs, MutationLoginInfluencerArgs, MutationLoginInfluencerWithGoogleArgs, MutationLoginInfluencerWithLineArgs, MutationUpdateInfluencerArgs } from '@/generated/graphql'
-import { EntrepreneurRepository, InfluencerRepository } from '@/repositories'
+import { EntrepreneurRepository, InfluencerAddonRepository, InfluencerPackageRepository, InfluencerPortfolioItemRepository, InfluencerRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleAccessToken, verifyLineCode } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -15,7 +15,15 @@ class InfluencerController {
       if (!isNil(existingEntrepreneur))
         throw new CustomError('409', ErrorMessage.DuplicatedRecord)
 
-      const data = await InfluencerRepository.create(stripNulls(input))
+      const { packages, addons, portfolio, ...influencerInput } = input
+      const data = await InfluencerRepository.create(stripNulls(influencerInput))
+
+      await Promise.all([
+        InfluencerPackageRepository.replaceAllForInfluencer(data.id, (packages ?? []).map(stripNulls)),
+        InfluencerAddonRepository.replaceAllForInfluencer(data.id, (addons ?? []).map(stripNulls)),
+        InfluencerPortfolioItemRepository.replaceAllForInfluencer(data.id, (portfolio ?? []).map(stripNulls)),
+      ])
+
       return buildResponse({ success: true, data, message: Success.Mutation })
     } catch (err) {
       const { code, message } = formatError('createInfluencer', err, ctx.requestUUID)
@@ -128,7 +136,16 @@ class InfluencerController {
           throw new CustomError('409', ErrorMessage.DuplicatedRecord)
       }
 
-      const data = await InfluencerRepository.update(Number(ctx.id), stripNulls(input))
+      const { packages, addons, portfolio, ...influencerInput } = input
+      const influencerId = Number(ctx.id)
+      const data = await InfluencerRepository.update(influencerId, stripNulls(influencerInput))
+
+      await Promise.all([
+        isNil(packages) ? undefined : InfluencerPackageRepository.replaceAllForInfluencer(influencerId, packages.map(stripNulls)),
+        isNil(addons) ? undefined : InfluencerAddonRepository.replaceAllForInfluencer(influencerId, addons.map(stripNulls)),
+        isNil(portfolio) ? undefined : InfluencerPortfolioItemRepository.replaceAllForInfluencer(influencerId, portfolio.map(stripNulls)),
+      ])
+
       return buildResponse({ success: true, data, message: Success.Update })
     } catch (err) {
       const { code, message } = formatError('updateInfluencer', err, ctx.requestUUID)

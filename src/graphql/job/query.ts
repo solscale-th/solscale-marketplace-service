@@ -1,7 +1,7 @@
 import { isNil } from 'lodash'
 
 import { JobPayload, JobsPayload, QueryJobArgs, QueryJobsArgs } from '@/generated/graphql'
-import { ApplicationRepository, EntrepreneurRepository, JobRepository } from '@/repositories'
+import { ApplicationRepository, EntrepreneurRepository, JobAddonRepository, JobRepository, JobRequirementFileRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, ResponseMessage } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -69,6 +69,8 @@ const queries = {
 
       return ApplicationRepository.listByJob(parent.id, 'invite')
     },
+    addons: (parent: { id: number }) => JobAddonRepository.listByJob(parent.id),
+    requirementFiles: (parent: { id: number }) => JobRequirementFileRepository.listByJob(parent.id),
   },
 }
 

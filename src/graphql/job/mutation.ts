@@ -1,7 +1,7 @@
 import { isNil } from 'lodash'
 
 import { JobPayload, MutationCreateJobArgs, MutationUpdateJobArgs } from '@/generated/graphql'
-import { ApplicationRepository, EntrepreneurRepository, JobRepository } from '@/repositories'
+import { ApplicationRepository, EntrepreneurRepository, JobAddonRepository, JobRepository, JobRequirementFileRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, ResponseMessage, stripNulls } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -13,21 +13,42 @@ class JobController {
       if (isNil(ctx.id) || ctx.type !== 'ENTREPRENEUR')
         throw new CustomError('401', ErrorMessage.Unauthorized)
 
-      const { inviteInfluencerIds, ...jobInput } = input
+      const { inviteInfluencerIds, addons, requirementFiles, ...jobInput } = input
       const data = await JobRepository.create({
         ...stripNulls(jobInput),
         entrepreneurId: Number(ctx.id),
       })
 
-      const uniqueInfluencerIds = [...new Set(inviteInfluencerIds ?? [])]
-      await Promise.all(uniqueInfluencerIds.map((influencerId) =>
-        ApplicationRepository.create({
-          jobId: data.id,
-          influencerId,
-          source: 'invite',
-          status: 'pending',
-        })
-      ))
+      const uniqueInfluencerIds = new Set(inviteInfluencerIds ?? [])
+      if (!isNil(jobInput.influencerId))
+        uniqueInfluencerIds.add(jobInput.influencerId)
+
+      await Promise.all([
+        ...[...uniqueInfluencerIds].map((influencerId) =>
+          ApplicationRepository.create({
+            jobId: data.id,
+            influencerId,
+            source: 'invite',
+            status: 'pending',
+          })
+        ),
+        ...(addons ?? []).map((addon) =>
+          JobAddonRepository.create({
+            jobId: data.id,
+            name: addon.name,
+            price: addon.price,
+          })
+        ),
+        ...(requirementFiles ?? []).map((file) =>
+          JobRequirementFileRepository.create({
+            jobId: data.id,
+            kind: file.kind,
+            required: file.required,
+            fileUrl: file.fileUrl ?? undefined,
+            originalFilename: file.originalFilename ?? undefined,
+          })
+        ),
+      ])
 
       return buildResponse({ success: true, data, message: Success.Mutation })
     } catch (err) {

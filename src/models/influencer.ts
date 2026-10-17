@@ -19,6 +19,9 @@ export interface InfluencerAttributes {
   bankAccountName?: string;
   bankAccountNumber?: string;
   otherPhotos?: string[];
+  countryCode?: string;
+  phone?: string;
+  bio?: string;
   averageRating: number;
   reviewCount: number;
   createdAt?: Date;
@@ -27,7 +30,7 @@ export interface InfluencerAttributes {
 
 export type InfluencerPk = 'id'
 export type InfluencerId = Influencer[InfluencerPk]
-export type InfluencerOptionalAttributes = 'id' | 'email' | 'password' | 'googleId' | 'lineId' | 'stageName' | 'age' | 'avatarUrl' | 'platforms' | 'contentCategories' | 'languages' | 'bankName' | 'bankAccountName' | 'bankAccountNumber' | 'otherPhotos' | 'averageRating' | 'reviewCount' | 'createdAt' | 'updatedAt'
+export type InfluencerOptionalAttributes = 'id' | 'email' | 'password' | 'googleId' | 'lineId' | 'stageName' | 'age' | 'avatarUrl' | 'platforms' | 'contentCategories' | 'languages' | 'bankName' | 'bankAccountName' | 'bankAccountNumber' | 'otherPhotos' | 'countryCode' | 'phone' | 'bio' | 'averageRating' | 'reviewCount' | 'createdAt' | 'updatedAt'
 export type InfluencerCreationAttributes = Optional<InfluencerAttributes, InfluencerOptionalAttributes>
 
 export class Influencer extends Model<InfluencerAttributes, InfluencerCreationAttributes> implements InfluencerAttributes {
@@ -48,6 +51,9 @@ export class Influencer extends Model<InfluencerAttributes, InfluencerCreationAt
   bankAccountName?: string
   bankAccountNumber?: string
   otherPhotos?: string[]
+  countryCode?: string
+  phone?: string
+  bio?: string
   averageRating!: number
   reviewCount!: number
   createdAt!: Date
@@ -126,6 +132,18 @@ export class Influencer extends Model<InfluencerAttributes, InfluencerCreationAt
       },
       otherPhotos: {
         type: DataTypes.JSONB,
+        allowNull: true,
+      },
+      countryCode: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      phone: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      bio: {
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       averageRating: {

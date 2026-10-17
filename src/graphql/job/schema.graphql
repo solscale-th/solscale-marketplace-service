@@ -16,10 +16,42 @@ type Job {
   endAt: DateTime
   status: String
   promoted: Boolean
+  visibility: String
+  influencerId: Int
+  postingDate: Date
+  languages: [String!]
+  caption: String
+  requiredMessage: String
+  forbiddenMessage: String
+  packageName: String
+  packageDetail: String
+  packagePrice: Int
   createdAt: DateTime
   updatedAt: DateTime
   entrepreneur: Entrepreneur
   invites: [Application!]
+  addons: [JobAddon!]
+  requirementFiles: [JobRequirementFile!]
+}
+
+type JobAddon {
+  id: Int
+  jobId: Int
+  name: String
+  price: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type JobRequirementFile {
+  id: Int
+  jobId: Int
+  kind: String
+  required: Boolean
+  fileUrl: String
+  originalFilename: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 type JobPayload {
@@ -30,6 +62,18 @@ type JobPayload {
 type JobsPayload {
   data: [Job]
   status: StatusPayload
+}
+
+input JobAddonInput {
+  name: String!
+  price: Int!
+}
+
+input JobRequirementFileInput {
+  kind: String!
+  required: Boolean!
+  fileUrl: String
+  originalFilename: String
 }
 
 input CreateJobInput {
@@ -47,6 +91,18 @@ input CreateJobInput {
   startAt: DateTime
   endAt: DateTime
   inviteInfluencerIds: [Int!]
+  visibility: String
+  influencerId: Int
+  postingDate: Date
+  languages: [String!]
+  caption: String
+  requiredMessage: String
+  forbiddenMessage: String
+  packageName: String
+  packageDetail: String
+  packagePrice: Int
+  addons: [JobAddonInput!]
+  requirementFiles: [JobRequirementFileInput!]
 }
 
 input UpdateJobInput {
