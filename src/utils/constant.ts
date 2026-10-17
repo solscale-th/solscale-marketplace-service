@@ -21,6 +21,7 @@ export const ResponseMessage = {
     JobNotOpen: 'This job is not open for applications',
     EntrepreneurNotDeposited: 'Deposit funds to your account before activating a job',
     InvalidDepositAmount: 'Deposit amount must be greater than zero',
+    InvalidRating: 'Rating must be between 1 and 5',
   },
 }
 

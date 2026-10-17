@@ -1,5 +1,5 @@
 import { InfluencerPayload, InfluencersPayload, QueryInfluencerArgs, QueryInfluencersArgs } from '@/generated/graphql'
-import { InfluencerAddonRepository, InfluencerPackageRepository, InfluencerPortfolioItemRepository, InfluencerRepository } from '@/repositories'
+import { EntrepreneurRepository, InfluencerAddonRepository, InfluencerPackageRepository, InfluencerPortfolioItemRepository, InfluencerRepository, InfluencerReviewRepository } from '@/repositories'
 import { buildResponse, formatError, ResponseMessage } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -47,6 +47,10 @@ const queries = {
     packages: (parent: { id: number }) => InfluencerPackageRepository.listByInfluencer(parent.id),
     addons: (parent: { id: number }) => InfluencerAddonRepository.listByInfluencer(parent.id),
     portfolio: (parent: { id: number }) => InfluencerPortfolioItemRepository.listByInfluencer(parent.id),
+    reviews: (parent: { id: number }) => InfluencerReviewRepository.listByInfluencer(parent.id),
+  },
+  InfluencerReview: {
+    entrepreneur: (parent: { entrepreneurId: number }) => EntrepreneurRepository.findById(parent.entrepreneurId),
   },
 }
 

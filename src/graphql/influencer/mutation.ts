@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt'
 import { isNil } from 'lodash'
 
-import { InfluencerPayload, LoginInfluencerPayload, MutationCreateInfluencerArgs, MutationLoginInfluencerArgs, MutationLoginInfluencerWithGoogleArgs, MutationLoginInfluencerWithLineArgs, MutationUpdateInfluencerArgs } from '@/generated/graphql'
-import { EntrepreneurRepository, InfluencerAddonRepository, InfluencerPackageRepository, InfluencerPortfolioItemRepository, InfluencerRepository } from '@/repositories'
+import { InfluencerPayload, InfluencerReviewPayload, LoginInfluencerPayload, MutationCreateInfluencerArgs, MutationLoginInfluencerArgs, MutationLoginInfluencerWithGoogleArgs, MutationLoginInfluencerWithLineArgs, MutationReviewInfluencerArgs, MutationUpdateInfluencerArgs } from '@/generated/graphql'
+import { EntrepreneurRepository, InfluencerAddonRepository, InfluencerPackageRepository, InfluencerPortfolioItemRepository, InfluencerRepository, InfluencerReviewRepository } from '@/repositories'
 import { buildResponse, CustomError, formatError, JWTUtils, ResponseMessage, stripNulls, verifyGoogleAccessToken, verifyLineCode } from '@/utils'
 import { Context } from '@/utils/context'
 
@@ -152,6 +152,31 @@ class InfluencerController {
       return buildResponse({ success: false, message, code })
     }
   }
+
+  public static async reviewInfluencer(_: unknown, { input }: MutationReviewInfluencerArgs, ctx: Context): Promise<InfluencerReviewPayload> {
+    try {
+      if (isNil(ctx.id) || ctx.type !== 'ENTREPRENEUR')
+        throw new CustomError('401', ErrorMessage.Unauthorized)
+
+      if (input.rating < 1 || input.rating > 5)
+        throw new CustomError('400', ErrorMessage.InvalidRating)
+
+      const data = await InfluencerReviewRepository.create({
+        influencerId: input.influencerId,
+        entrepreneurId: Number(ctx.id),
+        engagementId: input.engagementId ?? undefined,
+        rating: input.rating,
+        comment: input.comment ?? undefined,
+      })
+
+      await InfluencerReviewRepository.recomputeInfluencerRating(input.influencerId)
+
+      return buildResponse({ success: true, data, message: Success.Mutation })
+    } catch (err) {
+      const { code, message } = formatError('reviewInfluencer', err, ctx.requestUUID)
+      return buildResponse({ success: false, message, code })
+    }
+  }
 }
 
 const mutations = {
@@ -161,6 +186,7 @@ const mutations = {
     loginInfluencerWithGoogle: InfluencerController.loginInfluencerWithGoogle,
     loginInfluencerWithLine: InfluencerController.loginInfluencerWithLine,
     updateInfluencer: InfluencerController.updateInfluencer,
+    reviewInfluencer: InfluencerController.reviewInfluencer,
   },
 }
 

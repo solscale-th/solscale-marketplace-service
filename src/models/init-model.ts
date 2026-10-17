@@ -7,12 +7,13 @@ import { Influencer } from './influencer'
 import { InfluencerAddon } from './influencer-addon'
 import { InfluencerPackage } from './influencer-package'
 import { InfluencerPortfolioItem } from './influencer-portfolio-item'
+import { InfluencerReview } from './influencer-review'
 import { Job } from './job'
 import { JobAddon } from './job-addon'
 import { JobRequirementFile } from './job-requirement-file'
 import { Submission } from './submission'
 
-export { Application, Engagement, Entrepreneur, Influencer, InfluencerAddon, InfluencerPackage, InfluencerPortfolioItem, Job, JobAddon, JobRequirementFile, Submission }
+export { Application, Engagement, Entrepreneur, Influencer, InfluencerAddon, InfluencerPackage, InfluencerPortfolioItem, InfluencerReview, Job, JobAddon, JobRequirementFile, Submission }
 export type { ApplicationAttributes, ApplicationCreationAttributes } from './application'
 export type { EngagementAttributes, EngagementCreationAttributes } from './engagement'
 export type { EntrepreneurCreationAttributes } from './entrepreneur'
@@ -20,6 +21,7 @@ export type { InfluencerAttributes, InfluencerCreationAttributes } from './influ
 export type { InfluencerAddonAttributes, InfluencerAddonCreationAttributes } from './influencer-addon'
 export type { InfluencerPackageAttributes, InfluencerPackageCreationAttributes } from './influencer-package'
 export type { InfluencerPortfolioItemAttributes, InfluencerPortfolioItemCreationAttributes } from './influencer-portfolio-item'
+export type { InfluencerReviewAttributes, InfluencerReviewCreationAttributes } from './influencer-review'
 export type { JobAttributes, JobCreationAttributes } from './job'
 export type { JobAddonAttributes, JobAddonCreationAttributes } from './job-addon'
 export type { JobRequirementFileAttributes, JobRequirementFileCreationAttributes } from './job-requirement-file'
@@ -34,6 +36,7 @@ export function initModels(sequelize: Sequelize) {
   InfluencerAddon.initModel(sequelize)
   InfluencerPackage.initModel(sequelize)
   InfluencerPortfolioItem.initModel(sequelize)
+  InfluencerReview.initModel(sequelize)
   Entrepreneur.initModel(sequelize)
   Job.initModel(sequelize)
   JobAddon.initModel(sequelize)
@@ -47,6 +50,7 @@ export function initModels(sequelize: Sequelize) {
     InfluencerAddon,
     InfluencerPackage,
     InfluencerPortfolioItem,
+    InfluencerReview,
     Entrepreneur,
     Job,
     JobAddon,

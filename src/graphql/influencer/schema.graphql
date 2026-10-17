@@ -23,6 +23,24 @@ type Influencer {
   packages: [InfluencerPackage!]
   addons: [InfluencerAddon!]
   portfolio: [InfluencerPortfolioItem!]
+  reviews: [InfluencerReview!]
+}
+
+type InfluencerReview {
+  id: Int
+  influencerId: Int
+  entrepreneurId: Int
+  engagementId: Int
+  rating: Int
+  comment: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  entrepreneur: Entrepreneur
+}
+
+type InfluencerReviewPayload {
+  data: InfluencerReview
+  status: StatusPayload
 }
 
 type InfluencerPackage {
@@ -156,6 +174,13 @@ input CreateInfluencerInput {
   portfolio: [InfluencerPortfolioItemInput!]
 }
 
+input ReviewInfluencerInput {
+  influencerId: Int!
+  engagementId: Int
+  rating: Int!
+  comment: String
+}
+
 input InfluencerFilterInput {
   categories: [String!]
   platforms: [String!]
@@ -173,4 +198,5 @@ type Mutation {
   loginInfluencerWithGoogle(input: LoginInfluencerWithGoogleInput!): LoginInfluencerPayload
   loginInfluencerWithLine(input: LoginInfluencerWithLineInput!): LoginInfluencerPayload
   updateInfluencer(input: UpdateInfluencerInput!): InfluencerPayload
+  reviewInfluencer(input: ReviewInfluencerInput!): InfluencerReviewPayload
 }
