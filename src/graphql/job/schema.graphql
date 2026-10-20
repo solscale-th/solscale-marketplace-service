@@ -32,6 +32,7 @@ type Job {
   invites: [Application!]
   addons: [JobAddon!]
   requirementFiles: [JobRequirementFile!]
+  myApplication: Application
 }
 
 type JobAddon {

@@ -34,6 +34,13 @@ class ApplicationRepository {
     })
   }
 
+  public static findLatestByJobAndInfluencer(jobId: number, influencerId: number) {
+    return Application.findOne({
+      where: { jobId, influencerId },
+      order: [['id', 'DESC']],
+    })
+  }
+
   public static listByJob(jobId: number, source: string) {
     return Application.findAll({
       where: { jobId, source },

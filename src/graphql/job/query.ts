@@ -114,6 +114,12 @@ const queries = {
     },
     addons: (parent: { id: number }) => JobAddonRepository.listByJob(parent.id),
     requirementFiles: (parent: { id: number }) => JobRequirementFileRepository.listByJob(parent.id),
+    myApplication: (parent: { id: number }, _: unknown, ctx: Context) => {
+      if (isNil(ctx.id) || ctx.type !== 'INFLUENCER')
+        return null
+
+      return ApplicationRepository.findLatestByJobAndInfluencer(parent.id, Number(ctx.id))
+    },
   },
 }
 
