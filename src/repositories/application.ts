@@ -16,6 +16,24 @@ class ApplicationRepository {
     })
   }
 
+  public static listRequestedByInfluencer(influencerId: number, limit?: number, offset?: number) {
+    return Application.findAll({
+      where: { influencerId, source: 'invite', status: 'pending' },
+      order: [['id', 'DESC']],
+      limit,
+      offset,
+    })
+  }
+
+  public static listAcceptedByInfluencer(influencerId: number, limit?: number, offset?: number) {
+    return Application.findAll({
+      where: { influencerId, status: 'accepted' },
+      order: [['id', 'DESC']],
+      limit,
+      offset,
+    })
+  }
+
   public static listByJob(jobId: number, source: string) {
     return Application.findAll({
       where: { jobId, source },

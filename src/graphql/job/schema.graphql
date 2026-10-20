@@ -135,6 +135,8 @@ type Query {
   jobs(limit: Int, offset: Int, search: String, filter: JobFilterInput): JobsPayload
   job(id: Int!): JobPayload
   myJobs: JobsPayload
+  myRequestedJobs(limit: Int, offset: Int): JobsPayload
+  myAcceptedJobs(limit: Int, offset: Int): JobsPayload
 }
 
 type Mutation {

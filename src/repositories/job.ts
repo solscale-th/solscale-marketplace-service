@@ -77,6 +77,16 @@ class JobRepository {
     })
   }
 
+  public static listByIds(ids: number[]) {
+    if (ids.length === 0)
+      return Promise.resolve([])
+
+    return Job.findAll({
+      where: { id: { [Op.in]: ids } },
+      order: [['id', 'DESC']],
+    })
+  }
+
   public static async update(id: number, payload: Partial<JobCreationAttributes>) {
     await Job.update(payload, { where: { id } })
     return Job.findByPk(id)
